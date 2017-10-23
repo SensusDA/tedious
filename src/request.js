@@ -15,6 +15,7 @@ module.exports = class Request extends EventEmitter {
     this.userCallback = this.callback;
     this.callback = function() {
       if (this.preparing) {
+        this.preparing = false;
         this.emit('prepared');
         return this.preparing = false;
       } else {
