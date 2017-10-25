@@ -11,10 +11,15 @@ module.exports = class Request extends EventEmitter {
     this.parameters = [];
     this.parametersByName = {};
     this.userCallback = this.callback;
-    this.callback = function() {
+    this.callback = function(err) {
       if (this.preparing) {
-        this.emit('prepared');
-        return this.preparing = false;
+        this.preparing = false;
+        if (err) {
+          this.emit('error', err);
+        } else {
+          this.emit('prepared');
+        }
+        return false;
       } else {
         this.userCallback.apply(this, arguments);
         return this.emit('requestCompleted');
